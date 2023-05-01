@@ -1,11 +1,12 @@
 import 'package:music_xml/src/basic_attributes.dart';
+import 'package:music_xml/src/to_music_xml.dart';
 import 'package:xml/xml.dart';
 
 import 'music_xml_parser_state.dart';
 
 /// Internal representation of a MusicXML <bass> element.
 /// https://www.w3.org/2021/06/musicxml40/musicxml-reference/elements/bass/
-class Bass {
+class Bass implements ToMusicXml {
   final Step step;
   final double alter;
   final String? separator;
@@ -41,4 +42,13 @@ class Bass {
   }
 
   Bass(this.step, {this.alter = 0.0, this.separator});
+
+  @override
+  XmlNode node() {
+    return XmlElement(XmlName('bass'), [], [
+      XmlElement(XmlName('bass-step'), [], [XmlText(writeStep(step))]),
+      if (alter != 0.0)
+        XmlElement(XmlName('bass-alter'), [], [XmlText('$alter')]),
+    ]);
+  }
 }

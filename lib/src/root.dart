@@ -41,7 +41,7 @@ class Root implements ToMusicXml {
   @override
   XmlNode node() {
     return XmlElement(XmlName('root'), [], [
-      XmlElement(XmlName('root-step'), [], [XmlText(step.toString())]),
+      XmlElement(XmlName('root-step'), [], [XmlText(writeStep(step))]),
       if (alter != 0.0)
         XmlElement(XmlName('root-alter'), [], [XmlText('$alter')]),
     ]);

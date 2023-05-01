@@ -1,5 +1,7 @@
 // https://www.w3.org/2021/06/musicxml40/musicxml-reference/data-types/kind-value/
 import 'package:music_xml/src/camel_case.dart';
+import 'snake_case.dart';
+import 'package:xml/xml.dart';
 
 enum SimpleKind {
   major,
@@ -78,6 +80,16 @@ extension SimpleKindExtension on Kind {
                   : this == Kind.augmented || this == Kind.augmentedSeventh
                       ? SimpleKind.augmented
                       : SimpleKind.other;
+}
+
+extension KindToMusicXml on Kind {
+  XmlNode node() {
+    // TODO: Add Kind attributes
+    final kindDescription = toString().split('.').last;
+    return XmlElement(XmlName('kind'), [], [
+      XmlText(kindDescription.toSnakeCase('-')),
+    ]);
+  }
 }
 
 Kind parseKind(String str) => Kind.values

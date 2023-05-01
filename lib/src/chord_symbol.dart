@@ -3,6 +3,7 @@ import 'package:music_xml/src/bass.dart';
 import 'package:music_xml/src/degree.dart';
 import 'package:music_xml/src/kind.dart';
 import 'package:music_xml/src/root.dart';
+import 'package:music_xml/src/to_music_xml.dart';
 import 'package:xml/xml.dart';
 
 import 'music_xml_parser_state.dart';
@@ -95,7 +96,7 @@ const chordKindAbbreviations = <String, String>{
 /// While the MusicXML representation has more structure, using an unstructured
 /// string provides more flexibility and allows us to ingest chords from other
 /// sources, e.g. guitar tabs on the web.
-class ChordSymbol {
+class ChordSymbol implements ToMusicXml {
   final double timePosition;
   final String root;
   final Root rootTypeSafe;
@@ -328,5 +329,15 @@ class ChordSymbol {
     } catch (_) {
       throw XmlParserException('Non-integer scale degree: $valueText');
     }
+  }
+
+  @override
+  XmlNode node() {
+    return XmlElement(XmlName('harmony'), [], [
+      rootTypeSafe.node(),
+      kindTypeSafe.node(),
+      if (bassTypeSafe != null) bassTypeSafe!.node(),
+      ...degreesTypeSafe.map((degree) => degree.node()),
+    ]);
   }
 }

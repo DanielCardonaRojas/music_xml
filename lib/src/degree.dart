@@ -1,11 +1,12 @@
 import 'package:music_xml/src/basic_attributes.dart';
+import 'package:music_xml/src/to_music_xml.dart';
 import 'package:xml/xml.dart';
 
 import 'music_xml_parser_state.dart';
 
 /// Internal representation of a MusicXML <degree> element.
 /// https://www.w3.org/2021/06/musicxml40/musicxml-reference/elements/degree/
-class Degree {
+class Degree implements ToMusicXml {
   final int value;
   final double alter;
   final DegreeType type;
@@ -49,4 +50,13 @@ class Degree {
   }
 
   Degree(this.value, this.alter, this.type);
+
+  @override
+  XmlNode node() {
+    return XmlElement(XmlName('degree'), [], [
+      XmlElement(XmlName('degree-value'), [], [XmlText('$value')]),
+      XmlElement(XmlName('degree-alter'), [], [XmlText('$alter')]),
+      XmlElement(XmlName('degree-type'), [], [XmlText(writeDegreeType(type))]),
+    ]);
+  }
 }
