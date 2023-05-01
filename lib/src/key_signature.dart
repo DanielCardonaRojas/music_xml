@@ -1,9 +1,10 @@
+import 'package:music_xml/src/to_music_xml.dart';
 import 'package:xml/xml.dart';
 
 import 'music_xml_parser_state.dart';
 
 /// Internal representation of a MusicXML key signature.
-class KeySignature {
+class KeySignature implements ToMusicXml {
   late int key;
   late String mode;
   late double timePosition;
@@ -42,5 +43,10 @@ class KeySignature {
     if (mode != 'minor') mode = 'major';
     this.mode = mode!;
     timePosition = state.timePosition;
+  }
+
+  @override
+  XmlNode node() {
+    return XmlElement(XmlName('key'), [], []);
   }
 }

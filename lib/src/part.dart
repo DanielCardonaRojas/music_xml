@@ -1,5 +1,6 @@
 import 'package:music_xml/src/note.dart';
 import 'package:music_xml/src/note_duration.dart';
+import 'package:music_xml/src/to_music_xml.dart';
 import 'package:xml/xml.dart';
 
 import 'measure.dart';
@@ -7,7 +8,7 @@ import 'music_xml_parser_state.dart';
 import 'score_part.dart';
 
 /// Internal represention of a MusicXML <part> element.
-class Part {
+class Part implements ToMusicXml {
   final String id;
   final ScorePart scorePart;
   final List<Measure> measures;
@@ -125,5 +126,14 @@ class Part {
       // new_note_xml = ET.fromstring(new_note)
       // measure.append(new_note_xml)
     }
+  }
+
+  @override
+  XmlNode node() {
+    return XmlElement(XmlName('part'), [
+      XmlAttribute(XmlName('id'), id)
+    ], [
+      ...measures.map((measure) => measure.node()),
+    ]);
   }
 }

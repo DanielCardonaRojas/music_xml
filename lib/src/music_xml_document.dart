@@ -12,10 +12,11 @@ import 'score_part.dart';
 /// If the file is .mxl, this class uncompresses it
 /// After the file is loaded, this class then parses the document into memory
 /// using the parse method.
-class MusicXmlDocument extends XmlDocument {
+class MusicXmlDocument {
   final String title;
 
-  final XmlDocument score;
+  /// The parsed score document
+  final XmlDocument? score;
 
   /// ScoreParts indexed by id.
   final Map<String, ScorePart> scoreParts;
@@ -58,6 +59,23 @@ class MusicXmlDocument extends XmlDocument {
     }
 
     return MusicXmlDocument(title, score, scoreParts, parts, totalTimeSecs);
+  }
+
+  XmlDocument createDocument() {
+    if (score != null) return score!;
+
+    return XmlDocument([
+      XmlDeclaration([
+        XmlAttribute(XmlName('version'), '1.0'),
+        XmlAttribute(XmlName('encoding'), 'UTF-8'),
+        XmlAttribute(XmlName('standalone'), 'no'),
+      ]),
+      XmlDoctype('score-partwise'),
+      XmlElement(XmlName('score-partwise'), [], [
+        XmlElement(XmlName('part-list'), [], []),
+        ...parts.map((part) => part.node()),
+      ]),
+    ]);
   }
 
   MusicXmlDocument(

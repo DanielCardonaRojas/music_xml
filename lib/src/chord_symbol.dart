@@ -333,6 +333,7 @@ class ChordSymbol implements ToMusicXml {
 
   @override
   XmlNode node() {
+    // TODO: Implement ChordSymbol attributes
     return XmlElement(XmlName('harmony'), [], [
       rootTypeSafe.node(),
       kindTypeSafe.node(),

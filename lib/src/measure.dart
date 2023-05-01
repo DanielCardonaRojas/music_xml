@@ -1,5 +1,6 @@
 import 'package:music_xml/src/barline.dart';
 import 'package:music_xml/src/print.dart';
+import 'package:music_xml/src/to_music_xml.dart';
 import 'package:xml/xml.dart';
 
 import 'chord_symbol.dart';
@@ -11,10 +12,10 @@ import 'tempo.dart';
 import 'time_signature.dart';
 
 /// Internal represention of the MusicXML <measure> element.
-class Measure {
-  final List<Note> notes;
-  final List<ChordSymbol> chordSymbols;
-  final List<Tempo> tempos;
+class Measure implements ToMusicXml {
+  List<Note> notes;
+  List<ChordSymbol> chordSymbols;
+  List<Tempo> tempos;
   final prints = <Print>[];
   TimeSignature? timeSignature;
   KeySignature? keySignature;
@@ -235,5 +236,21 @@ class Measure {
         state.timeSignature = newTimeSignature;
       }
     }
+  }
+
+  @override
+  XmlNode node() {
+    final attributes = XmlElement(XmlName('attributes'), [], [
+      if (timeSignature != null) timeSignature!.node(),
+      if (keySignature != null) keySignature!.node(),
+    ]);
+
+    return XmlElement(XmlName('measure'), [
+      XmlAttribute(XmlName('number'), '$number')
+    ], [
+      attributes,
+      ...chordSymbols.map((chordsymbol) => chordsymbol.node()),
+      //...notes.map((note) => note.node()),
+    ]);
   }
 }

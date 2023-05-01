@@ -1,3 +1,4 @@
+import 'package:music_xml/src/to_music_xml.dart';
 import 'package:xml/xml.dart';
 
 import 'music_xml_parser_state.dart';
@@ -7,7 +8,7 @@ import 'music_xml_parser_state.dart';
 /// - Composite time signatures: 3+2/8
 /// - Alternating time signatures 2/4 + 3/8
 /// - Senza misura
-class TimeSignature {
+class TimeSignature implements ToMusicXml {
   int numerator;
   int denominator;
   int divisions;
@@ -57,5 +58,13 @@ class TimeSignature {
       denominator: denominator,
       timePosition: timePosition,
     );
+  }
+
+  @override
+  XmlNode node() {
+    return XmlElement(XmlName('time'), [], [
+      XmlElement(XmlName('beats'), [], [XmlText('$beats')]),
+      XmlElement(XmlName('beat-type'), [], [XmlText('$beatType')]),
+    ]);
   }
 }
