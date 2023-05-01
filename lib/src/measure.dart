@@ -12,9 +12,9 @@ import 'time_signature.dart';
 
 /// Internal represention of the MusicXML <measure> element.
 class Measure {
-  final notes = <Note>[];
-  final chordSymbols = <ChordSymbol>[];
-  final tempos = <Tempo>[];
+  List<Note> notes;
+  List<ChordSymbol> chordSymbols;
+  List<Tempo> tempos;
   final prints = <Print>[];
   TimeSignature? timeSignature;
   KeySignature? keySignature;
@@ -22,7 +22,12 @@ class Measure {
   Barline? barline;
   int number;
 
-  Measure({required this.number});
+  Measure({
+    required this.number,
+    this.chordSymbols = const [],
+    this.tempos = const [],
+    this.notes = const [],
+  });
 
   /// Parse the <measure> element.
   factory Measure.parse(XmlElement xmlMeasure, MusicXMLParserState state) {
