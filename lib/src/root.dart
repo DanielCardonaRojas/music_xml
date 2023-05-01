@@ -2,10 +2,11 @@ import 'package:music_xml/src/basic_attributes.dart';
 import 'package:xml/xml.dart';
 
 import 'music_xml_parser_state.dart';
+import 'to_music_xml.dart';
 
 /// Internal representation of a MusicXML <root> element.
 /// https://www.w3.org/2021/06/musicxml40/musicxml-reference/elements/root/
-class Root {
+class Root implements ToMusicXml {
   final Step step;
   final double alter;
 
@@ -36,4 +37,13 @@ class Root {
   }
 
   Root(this.step, {this.alter = 0.0});
+
+  @override
+  XmlNode node() {
+    return XmlElement(XmlName('root'), [], [
+      XmlElement(XmlName('root-step'), [], [XmlText(step.toString())]),
+      if (alter != 0.0)
+        XmlElement(XmlName('root-alter'), [], [XmlText('$alter')]),
+    ]);
+  }
 }
