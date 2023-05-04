@@ -1,3 +1,4 @@
+import 'package:music_xml/src/to_music_xml.dart';
 import 'package:xml/xml.dart';
 
 import 'music_xml_parser_state.dart';
@@ -9,7 +10,7 @@ import 'music_xml_parser_state.dart';
 ///
 /// If no MIDI info is found for the part, use the default MIDI channel (0)
 /// and default to the Grand Piano program (MIDI Program #1).
-class ScorePart {
+class ScorePart implements ToMusicXml {
   final String id;
   final String name;
   final int midiChannel;
@@ -46,4 +47,17 @@ class ScorePart {
   @override
   String toString() =>
       'ScorePart: $name, Channel: $midiChannel, Program: $midiProgram';
+
+  @override
+  XmlNode node() {
+    return XmlElement(XmlName('score-part'), [
+      XmlAttribute(XmlName('id'), id)
+    ], [
+      XmlElement(XmlName('part-name'), [], [XmlText(name)]),
+      XmlElement(XmlName('midi-instrument'), [], [
+        XmlElement(XmlName('midi-channel'), [], [XmlText('$midiChannel')]),
+        XmlElement(XmlName('midi-program'), [], [XmlText('$midiProgram')]),
+      ])
+    ]);
+  }
 }

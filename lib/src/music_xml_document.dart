@@ -63,6 +63,7 @@ class MusicXmlDocument {
 
   XmlDocument createDocument() {
     if (score != null) return score!;
+    final refParts = scoreParts.values.toList();
 
     return XmlDocument([
       XmlDeclaration([
@@ -72,7 +73,8 @@ class MusicXmlDocument {
       ]),
       XmlDoctype('score-partwise'),
       XmlElement(XmlName('score-partwise'), [], [
-        XmlElement(XmlName('part-list'), [], []),
+        XmlElement(
+            XmlName('part-list'), [], [...refParts.map((e) => e.node())]),
         ...parts.map((part) => part.node()),
       ]),
     ]);
