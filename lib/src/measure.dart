@@ -22,6 +22,7 @@ class Measure implements ToMusicXml {
   int duration = 0;
   Barline? barline;
   int number;
+  double? width;
 
   Measure({
     required this.number,
@@ -246,11 +247,12 @@ class Measure implements ToMusicXml {
     ]);
 
     return XmlElement(XmlName('measure'), [
-      XmlAttribute(XmlName('number'), '$number')
+      XmlAttribute(XmlName('number'), '$number'),
+      if (width != null) XmlAttribute(XmlName('width'), '${width!}')
     ], [
-      attributes,
+      if (attributes.children.isNotEmpty) attributes,
       ...chordSymbols.map((chordsymbol) => chordsymbol.node()),
-      //...notes.map((note) => note.node()),
+      ...notes.map((note) => note.node()),
     ]);
   }
 }

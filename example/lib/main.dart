@@ -56,7 +56,7 @@ class MyHomePage extends StatelessWidget {
           if (snapshot.hasData) {
             final document = snapshot.data!;
             final score = document.score;
-            final scorePartwise = score.getElement('score-partwise');
+            final scorePartwise = score?.getElement('score-partwise');
             final movementTitle = scorePartwise?.getElement('movement-title');
             return Padding(
               padding: const EdgeInsets.all(16.0),

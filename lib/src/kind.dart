@@ -84,13 +84,80 @@ extension SimpleKindExtension on Kind {
 
 extension KindToMusicXml on Kind {
   XmlNode node() {
-    // TODO: Add Kind attributes
     final kindDescription = toString().split('.').last;
-    return XmlElement(XmlName('kind'), [], [
-      XmlText(kindDescription.toSnakeCase('-')),
+    final kindSnakeCase = kindDescription.toSnakeCase('-');
+    final kindAbbreviation = chordKindAbbreviations[kindSnakeCase];
+    return XmlElement(XmlName('kind'), [
+      XmlAttribute(XmlName('text'), '$kindAbbreviation')
+    ], [
+      XmlText(kindSnakeCase),
     ]);
   }
 }
 
 Kind parseKind(String str) => Kind.values
     .firstWhere((e) => e.toString() == 'Kind.' + lowerCamelCase(str));
+
+/// The below dictionary maps chord kinds to an abbreviated string as would
+/// appear in a chord symbol in a standard lead sheet. There are often multiple
+/// standard abbreviations for the same chord type, e.g. "+" and "aug" both
+/// refer to an augmented chord, and "maj7", "M7", and a Delta character all
+/// refer to a major-seventh chord; this dictionary attempts to be consistent
+/// but the choice of abbreviation is somewhat arbitrary.
+///
+/// The MusicXML-defined chord kinds are listed here:
+/// http://usermanuals.musicxml.com/MusicXML/Content/ST-MusicXML-kind-value.htm
+const chordKindAbbreviations = <String, String>{
+// These chord kinds are in the MusicXML spec.
+  'major': '',
+  'minor': 'm',
+  'augmented': 'aug',
+  'diminished': 'dim',
+  'dominant': '7',
+  'major-seventh': 'maj7',
+  'minor-seventh': 'm7',
+  'diminished-seventh': 'dim7',
+  'augmented-seventh': 'aug7',
+  'half-diminished': 'm7b5',
+  'major-minor': 'm(maj7)',
+  'major-sixth': '6',
+  'minor-sixth': 'm6',
+  'dominant-ninth': '9',
+  'major-ninth': 'maj9',
+  'minor-ninth': 'm9',
+  'dominant-11th': '11',
+  'major-11th': 'maj11',
+  'minor-11th': 'm11',
+  'dominant-13th': '13',
+  'major-13th': 'maj13',
+  'minor-13th': 'm13',
+  'suspended-second': 'sus2',
+  'suspended-fourth': 'sus',
+  'pedal': 'ped',
+  'power': '5',
+  'none': 'N.C.',
+
+// These are not in the spec, but show up frequently in the wild.
+  'dominant-seventh': '7',
+  'augmented-ninth': 'aug9',
+  'minor-major': 'm(maj7)',
+
+// Some abbreviated kinds also show up frequently in the wild.
+  '': '',
+  'min': 'm',
+  'aug': 'aug',
+  'dim': 'dim',
+  '7': '7',
+  'maj7': 'maj7',
+  'min7': 'm7',
+  'dim7': 'dim7',
+  'm7b5': 'm7b5',
+  'minMaj7': 'm(maj7)',
+  '6': '6',
+  'min6': 'm6',
+  'maj69': '6(add9)',
+  '9': '9',
+  'maj9': 'maj9',
+  'min9': 'm9',
+  'sus47': 'sus7'
+};

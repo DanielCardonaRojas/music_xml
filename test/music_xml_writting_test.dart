@@ -1,6 +1,7 @@
 import 'package:music_xml/music_xml.dart';
 import 'package:music_xml/src/bass.dart';
 import 'package:test/test.dart';
+import 'package:xml/xml.dart';
 
 void main() {
   test('can write ChordSymbol', () {
@@ -49,5 +50,20 @@ void main() {
     final degree = Degree(9, 0, DegreeType.add);
     final result = degree.node().toXmlString(pretty: true);
     print(result);
+  });
+
+  test('can write pitch', () {
+    final pitch = Pitch(step: Step.d, octave: 1);
+    final result = pitch.node().toXmlString(pretty: true);
+
+    final stepContent = XmlDocument.parse(result)
+        .getElement('pitch')
+        ?.getElement('step')
+        ?.children
+        .first;
+
+    assert(result.contains('step'));
+    assert(result.contains('octave'));
+    assert(stepContent.toString().contains('D'));
   });
 }

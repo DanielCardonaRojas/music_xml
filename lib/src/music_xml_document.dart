@@ -73,6 +73,9 @@ class MusicXmlDocument {
       ]),
       XmlDoctype('score-partwise'),
       XmlElement(XmlName('score-partwise'), [], [
+        XmlElement(XmlName('work'), [], [
+          XmlElement(XmlName('work-title'), [], [XmlText(title)]),
+        ]),
         XmlElement(
             XmlName('part-list'), [], [...refParts.map((e) => e.node())]),
         ...parts.map((part) => part.node()),
