@@ -1,15 +1,19 @@
 import 'package:music_xml/src/basic_attributes.dart';
+import 'package:music_xml/src/system_distance.dart';
+import 'package:music_xml/src/system_layout.dart';
+import 'package:music_xml/src/to_music_xml.dart';
 import 'package:xml/xml.dart';
 
 import 'music_xml_parser_state.dart';
 
 /// Internal representation of a MusicXML <print> element.
-class Print {
+class Print implements ToMusicXml {
   final int? blankPage;
   bool newPage;
   bool newSystem;
   int? pageNumber;
   double? staffSpacing;
+  SystemLayout? systemLayout;
 
   /// Parse the MusicXML <print> element.
   factory Print.parse(XmlElement xmlPrint, MusicXMLParserState state) {
@@ -43,13 +47,19 @@ class Print {
       }
     }
 
+    final systemLayoutNode = xmlPrint.getElement('system-layout');
+    SystemLayout? systemLayout;
+
+    if (systemLayoutNode != null)
+      systemLayout = SystemLayout.parse(systemLayoutNode, state);
+
     return Print(
       blankPage,
       newPage ?? false,
       newSystem ?? false,
       pageNumber,
       staffSpacing,
-    );
+    )..systemLayout = systemLayout;
   }
 
   Print(
@@ -59,4 +69,19 @@ class Print {
     this.pageNumber,
     this.staffSpacing,
   );
+
+  @override
+  XmlNode node() {
+    return XmlElement(XmlName('print'), [
+      if (newSystem)
+        XmlAttribute(XmlName('new-system'), newSystem ? 'yes' : 'no'),
+      if (newPage) XmlAttribute(XmlName('new-page'), newPage ? 'yes' : 'no'),
+      if (pageNumber != null)
+        XmlAttribute(XmlName('page-number'), '${pageNumber!}'),
+      if (staffSpacing != null)
+        XmlAttribute(XmlName('staffSpacing'), '${staffSpacing!}'),
+    ], [
+      if (systemLayout != null) systemLayout!.node(),
+    ]);
+  }
 }

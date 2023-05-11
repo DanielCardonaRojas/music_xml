@@ -18,3 +18,6 @@ export 'src/score_part.dart';
 export 'src/tempo.dart';
 export 'src/time_signature.dart';
 export 'src/tie.dart';
+export 'src/system_layout.dart';
+export 'src/system_distance.dart';
+export 'src/system_margins.dart';
