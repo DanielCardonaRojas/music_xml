@@ -2,13 +2,14 @@ import 'package:music_xml/src/basic_attributes.dart';
 import 'package:music_xml/src/lyric.dart';
 import 'package:music_xml/src/pitch.dart';
 import 'package:music_xml/src/tie.dart';
+import 'package:music_xml/src/to_music_xml.dart';
 import 'package:xml/xml.dart';
 
 import 'music_xml_parser_state.dart';
 import 'note_duration.dart';
 
 /// Internal representation of a MusicXML <note> element.
-class Note {
+class Note implements ToMusicXml {
   final int midiChannel;
   final int midiProgram;
   final int velocity;
@@ -28,6 +29,15 @@ class Note {
   Pitch? pitchTypeSafe;
   Iterable<Lyric>? lyrics;
   List<Tie> ties;
+
+  factory Note.rest({required NoteDuration duration}) {
+    return Note(0, 0, 0, 0, true, false, false, duration, null, null, null, []);
+  }
+
+  factory Note.single({required NoteDuration duration, required Pitch pitch}) {
+    return Note(
+        0, 0, 0, 0, true, false, false, duration, null, pitch, null, []);
+  }
 
   /// Parse the MusicXML <note> element.
   factory Note.parse(XmlElement xmlNote, MusicXMLParserState state) {
@@ -205,6 +215,16 @@ class Note {
     final denominator =
         int.parse(xmlTimeModification.getElement('normal-notes')!.text);
     return numerator / denominator;
+  }
+
+  @override
+  XmlNode node() {
+    return XmlElement(XmlName('note'), [], [
+      if (pitchTypeSafe != null) pitchTypeSafe!.node(),
+      if (isRest) XmlElement(XmlName('rest'))..isSelfClosing = true,
+      noteDuration.node(),
+      XmlElement(XmlName('type'), [], [XmlText(noteDuration.type)]),
+    ]);
   }
 }
 

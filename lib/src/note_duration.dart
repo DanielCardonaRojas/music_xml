@@ -1,10 +1,13 @@
+import 'package:xml/xml.dart';
+
 import 'music_xml_parser_state.dart';
+import 'to_music_xml.dart';
 
 /// Standard pulses per quarter.
 /// https://en.wikipedia.org/wiki/Pulses_per_quarter_note
 const standardPpq = 220;
 
-class NoteDuration {
+class NoteDuration implements ToMusicXml {
   /// MusicXML duration
   int duration;
 
@@ -38,6 +41,26 @@ class NoteDuration {
     this.tupletRatio,
     this.isGraceNote,
   );
+
+  factory NoteDuration.sixteenth({bool dotted = false}) {
+    return NoteDuration(1, 0, 0, 0, dotted ? 1 : 0, 'sixteenth', 1, false);
+  }
+
+  factory NoteDuration.eighth({bool dotted = false}) {
+    return NoteDuration(1, 0, 0, 0, dotted ? 1 : 0, 'eighth', 1, false);
+  }
+
+  factory NoteDuration.quarter({bool dotted = false}) {
+    return NoteDuration(1, 0, 0, 0, dotted ? 1 : 0, 'quarter', 1, false);
+  }
+
+  factory NoteDuration.half({bool dotted = false}) {
+    return NoteDuration(2, 0, 0, 0, dotted ? 1 : 0, 'half', 1, false);
+  }
+
+  factory NoteDuration.whole({bool dotted = false}) {
+    return NoteDuration(4, 0, 0, 0, dotted ? 1 : 0, 'whole', 1, false);
+  }
 
   /// Parse the duration of a note and compute timings.
   factory NoteDuration.parse(
@@ -96,5 +119,10 @@ class NoteDuration {
       tupletRatio ?? 1.0,
       _isGraceNote,
     );
+  }
+
+  @override
+  XmlNode node() {
+    return XmlElement(XmlName('duration'), [], [XmlText('$duration')]);
   }
 }
