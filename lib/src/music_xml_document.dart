@@ -72,7 +72,9 @@ class MusicXmlDocument {
         XmlAttribute(XmlName('standalone'), 'no'),
       ]),
       XmlDoctype('score-partwise'),
-      XmlElement(XmlName('score-partwise'), [], [
+      XmlElement(XmlName('score-partwise'), [
+        XmlAttribute(XmlName('version'), '4.0')
+      ], [
         XmlElement(XmlName('work'), [], [
           XmlElement(XmlName('work-title'), [], [XmlText(title)]),
         ]),

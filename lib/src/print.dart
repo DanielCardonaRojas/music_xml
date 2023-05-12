@@ -70,6 +70,10 @@ class Print implements ToMusicXml {
     this.staffSpacing,
   );
 
+  factory Print.newSystem() {
+    return Print(null, false, true, null, null);
+  }
+
   @override
   XmlNode node() {
     return XmlElement(XmlName('print'), [

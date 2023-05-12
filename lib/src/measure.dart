@@ -250,6 +250,7 @@ class Measure implements ToMusicXml {
       XmlAttribute(XmlName('number'), '$number'),
       if (width != null) XmlAttribute(XmlName('width'), '${width!}')
     ], [
+      ...prints.map((e) => e.node()),
       if (attributes.children.isNotEmpty) attributes,
       ...chordSymbols.map((chordsymbol) => chordsymbol.node()),
       ...notes.map((note) => note.node()),

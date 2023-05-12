@@ -17,6 +17,8 @@ void main() {
 
     final result = chordSymbol.node().toXmlString(pretty: true);
     assert(result.contains('harmony'));
+    assert(result.contains('root'));
+    assert(result.contains('kind'));
     print(result);
   });
 
@@ -65,5 +67,12 @@ void main() {
     assert(result.contains('step'));
     assert(result.contains('octave'));
     assert(stepContent.toString().contains('D'));
+  });
+
+  test('can write duration', () {
+    final duration = NoteDuration.whole();
+    final result = duration.node().toXmlString(pretty: true);
+    assert(result.contains('4'));
+    assert(result.contains('duration'));
   });
 }

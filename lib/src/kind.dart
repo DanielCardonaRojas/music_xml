@@ -88,7 +88,8 @@ extension KindToMusicXml on Kind {
     final kindSnakeCase = kindDescription.toSnakeCase('-');
     final kindAbbreviation = chordKindAbbreviations[kindSnakeCase];
     return XmlElement(XmlName('kind'), [
-      XmlAttribute(XmlName('text'), '$kindAbbreviation')
+      if (kindAbbreviation != null && kindAbbreviation.isNotEmpty)
+        XmlAttribute(XmlName('text'), '$kindAbbreviation')
     ], [
       XmlText(kindSnakeCase),
     ]);
